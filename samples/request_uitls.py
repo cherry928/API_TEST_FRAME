@@ -8,6 +8,7 @@ import requests
 import jsonpath
 import re
 from common import config
+from common.check_utils import CheckUtils
 
 class RequestUtils():
     def __init__(self):
@@ -29,13 +30,7 @@ class RequestUtils():
             value = re.findall(get_info['取值代码'], response.text)[0]
             self.temp_variables[get_info['传值变量']] = value
             print(self.temp_variables)
-        result = {
-            'code': 0,   # 请求是否成功的标志位
-            'response_reason': response.reason,
-            'response_code': response.status_code,
-            'resonse_header': response.headers,
-            'response_nody': response.text
-        }
+        result = CheckUtils(response).run_check(get_info['期望结果类型'],get_info['期望结果'])
         return result
 
     def post(self,post_info):
@@ -54,13 +49,7 @@ class RequestUtils():
             value = re.findall(post_info['取值代码'], response.text)[0]
             self.temp_variables[post_info['传值变量']] = value
             print(self.temp_variables)
-        result = {
-            'code': 0,   # 请求是否成功的标志位
-            'response_reason': response.reason,
-            'response_code': response.status_code,
-            'resonse_header': response.headers,
-            'response_nody': response.json()
-        }
+        result = CheckUtils(response).run_check(post_info['期望结果类型'],post_info['期望结果'])
         return result
 
     def request(self,step_info):
