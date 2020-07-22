@@ -14,7 +14,7 @@ test_data_path = os.path.join(os.path.dirname(__file__), config.CASE_DATA_PATH)
 class TestdataUtils:
     def __init__(self, test_data_path=test_data_path):
         self.test_data_path = test_data_path
-        self.test_data = ExcelUtils(self.test_data_path,'Sheet2').get_sheet_data_by_dict()
+        self.test_data = ExcelUtils(self.test_data_path,'Sheet1').get_sheet_data_by_dict()
 
     def get_testcase_data_dict(self):
         test_case_list = {}
@@ -29,7 +29,7 @@ class TestdataUtils:
             one_case_dict['case_name'] = k
             one_case_dict['case_info'] = v
             testcase_list.append(one_case_dict)
-        return testcase_list
+        return tuple(testcase_list)
 
 if __name__=='__main__':
     testdataUtils = TestdataUtils()

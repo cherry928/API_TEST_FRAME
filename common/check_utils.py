@@ -35,7 +35,7 @@ class CheckUtils:
             'message': ''  # 扩展作为日志输出等
         }
 
-    def no_check(self):
+    def no_check(self,check_data=None):
         return self.pass_result
 
     def check_key(self,check_data=None):
@@ -53,6 +53,7 @@ class CheckUtils:
             else:
                 reslist.append(self.fail_result)
                 wrongkey.append(check_data)
+        print('json键是否存在校验！')
         print('reslist为%s'%reslist)
         print('wrongkey为%s'%wrongkey)
         if self.fail_result in reslist:
@@ -74,6 +75,7 @@ class CheckUtils:
             else:
                 res_list.append(self.fail_result)
                 wrong_items.append(check_item)
+        print('json键值对校验！')
         print('res_list%s'%res_list)
         print('wrong_items%s'%wrong_items)
         if self.fail_result in res_list:
