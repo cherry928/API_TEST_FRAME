@@ -9,6 +9,7 @@ import jsonpath
 import re
 from common import config
 from common.check_utils import CheckUtils
+from common.test_data_utils import TestdataUtils
 
 class RequestUtils():
     def __init__(self):
@@ -77,8 +78,12 @@ class RequestUtils():
     def request_by_step(self, step_infos):
         for step_info in step_infos:
             temp_result = self.request(step_info)
+            print(temp_result)
             if temp_result['code']!=0:
+                TestdataUtils().write_result_to_excel(step_info['测试用例编号'],step_info['测试用例步骤'],'失败')
                 break
+            else:
+                TestdataUtils().write_result_to_excel(step_info['测试用例编号'], step_info['测试用例步骤'])
         return temp_result
 
 

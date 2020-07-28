@@ -6,18 +6,20 @@
 
 import os
 import xlrd
+from xlutils.copy import copy
 
-excel_path = os.path.join(os.path.dirname(__file__), '../test_data/test_data_01.xlsx')
+excel_path = os.path.join(os.path.dirname(__file__), '../test_data/test_case.xls')
 
 class ExcelUtils():
     def  __init__(self, file_path, sheet_name):
         self.file_path = file_path
+        self.wb = xlrd.open_workbook(self.file_path, formatting_info=True)
         self.sheet_name = sheet_name
         self.sheet = self.get_sheet()
 
     def get_sheet(self):
-        wb = xlrd.open_workbook(self.file_path)
-        sheet = wb.sheet_by_name(self.sheet_name)
+        # wb = xlrd.open_workbook(self.file_path)
+        sheet = self.wb.sheet_by_name(self.sheet_name)
         return sheet
 
     def get_row_count(self):
@@ -55,7 +57,26 @@ class ExcelUtils():
             alldata_list.append(row_dict)
         return alldata_list
 
+    def update_excel_data(self,row_id,col_id,content):
+        new_wb = copy(self.wb)
+        sheet = new_wb.get_sheet(self.wb.sheet_names().index(self.sheet_name))
+        sheet.write(row_id, col_id, content)
+        new_wb.save(self.file_path)
+
+    def clear_excel_column(self,start_id,end_id,col_id):
+        new_wb = copy(self.wb)
+        sheet = new_wb.get_sheet(self.wb.sheet_names().index(self.sheet_name))
+        for rowd_id in range(start_id,end_id):
+            sheet.write(rowd_id, col_id, "")
+        new_wb.save(self.file_path)
+
+
 if __name__=='__main__':
     excelutil = ExcelUtils(excel_path,'Sheet1')
+    # print(excelutil.sheet.row(0)[0].value)
+    for i in range(len(excelutil.sheet.row(0))):
+        if excelutil.sheet.row(0)[i].value == '测试结果':
+            break
+    print(i)
     # print(excelutil.get_cell_merged_value(4,0))
-    print(excelutil.get_sheet_data_by_dict())
+    # print(excelutil.update_excel_data(1,14,'失败'))

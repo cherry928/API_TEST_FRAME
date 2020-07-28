@@ -12,6 +12,10 @@ from requests.exceptions import ProxyError
 from requests.exceptions import ConnectionError
 from common import config
 from common.check_utils import CheckUtils
+from common.test_data_utils import TestdataUtils
+from nb_log import LogManager
+
+logger = LogManager(__file__).get_logger_and_add_handlers()
 
 
 class RequestUtils():
@@ -24,7 +28,7 @@ class RequestUtils():
     def __get(self,get_info):
         try:
             url = self.hosts + get_info['请求地址']
-            print('get请求url为%s'%url)
+            # print('get请求url为%s'%url)
             response = self.session.get(url=url,
                                         params= ast.literal_eval(get_info['请求参数(get)']))
             response.encoding = response.apparent_encoding
@@ -51,7 +55,7 @@ class RequestUtils():
     def __post(self,post_info):
         try:
             url = self.hosts + post_info['请求地址']
-            print('post请求url为%s' % url)
+            # print('post请求url为%s' % url)
             # print('post请求参数为%s'%ast.literal_eval(post_info['请求参数(get)']))
             # print('post请求json为%s'%post_info['提交数据（post)'])
             response = self.session.post(url=url,
@@ -103,8 +107,10 @@ class RequestUtils():
                 result = self.__post(step_info)
             else:
                 result = {'code':1, 'reslut':'请求方式不支持'}
+                logger.error('请求方式不支持')
         except Exception as e:
             result = {'code':4, 'reslut':'用例编号[%s]的[%s]步出现系统异常，原因：%s'%(step_info['用例编号'],step_info['测试用例步骤'],e.__str__())}
+            logger.error('用例编号[%s]的[%s]步骤出现系统异常，原因：%s'%(step_info['测试用例编号'],step_info["测试用例步骤"],e.__str__()))
         return result
 
     def request_by_step(self,step_infos):
@@ -112,7 +118,10 @@ class RequestUtils():
         for step_info in step_infos:
             temp_result = self.request(step_info)
             if temp_result['code'] != 0:
+                TestdataUtils().write_result_to_excel(step_info['测试用例编号'], step_info['测试用例步骤'], '失败')
                 break
+            else:
+                TestdataUtils().write_result_to_excel(step_info['测试用例编号'], step_info['测试用例步骤'])
         return temp_result
 
 

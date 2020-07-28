@@ -37,6 +37,7 @@ class RunCase():
         report_dir.create_dir(self.title)
         report_file_path = HTMLTestReportCN.GlobalMsg.get_value('report_path')
         fp = open(report_file_path,'wb')
+        logger
         runner = HTMLTestReportCN.HTMLTestRunner(stream=fp,
                                                  title=self.title,
                                                  description=self.description,
